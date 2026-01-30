@@ -14,12 +14,17 @@ public class UserService {
     public UserRepo repo;
 
     public User savingNewUser(User user) {
+        // Use the role sent from frontend, or default to USER
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
+        // Remove the email-based admin logic as per request
         return repo.save(user);
     }
 
     public User authEmailAndPassword(User user) {
         User user2 = repo.findByEmailAndPassword(user.getEmail(), user.getPassword());
-        if(user2 == null) {
+        if (user2 == null) {
             throw new RuntimeException("Invalid Details");
         }
         return user2;
@@ -45,5 +50,21 @@ public class UserService {
             return repo.save(existingUser);
         }
         return null;
+    }
+
+    // --- NEW: Enroll User in Course ---
+    @Autowired
+    private com.example.demo.repository.CourseRepo courseRepo;
+
+    public User enrollUserInCourse(Long userId, Long courseId) {
+        Optional<User> userOp = repo.findById(userId);
+        Optional<com.example.demo.entity.Course> courseOp = courseRepo.findById(courseId);
+
+        if (userOp.isPresent() && courseOp.isPresent()) {
+            User user = userOp.get();
+            user.setCourse(courseOp.get());
+            return repo.save(user);
+        }
+        return null; // Or throw exception
     }
 }

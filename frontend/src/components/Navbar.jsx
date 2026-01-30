@@ -13,6 +13,10 @@ function Navbar() {
             <div style={styles.brand}>Student Portal</div>
             <div style={styles.links}>
                 <Link to="/dashboard" style={styles.link}>Dashboard</Link>
+                {/* Admin Link Check */}
+                {JSON.parse(localStorage.getItem("user"))?.role === "ADMIN" && (
+                    <Link to="/admin" style={styles.link}>Admin Panel</Link>
+                )}
                 <Link to="/users" style={styles.link}>User Details</Link>
                 <Link to="/attendance" style={styles.link}>Attendance</Link>
                 <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>

@@ -19,14 +19,20 @@ function Login() {
         try {
             const res = await axios.post("http://localhost:8080/login", loginUser)
 
-            // --- NEW CODE: Save User Info ---
-            // The backend returns the full user object (id, username, email, etc.)
-            // We save the ID and Username to use in the Dashboard
+            // Save User Info
+            // Backend returns the full user object with the correct role from DB
+            localStorage.setItem("user", JSON.stringify(res.data));
             localStorage.setItem("userId", res.data.id);
             localStorage.setItem("userName", res.data.username);
 
-            alert("User login Success")
-            navigate("/dashboard")
+            alert(`Login Success as ${res.data.role}`)
+
+            // Redirect based on role
+            if (res.data.role === 'ADMIN') {
+                navigate("/admin");
+            } else {
+                navigate("/dashboard");
+            }
         } catch (err) {
             alert("Login Failed, Please Check Your Details")
         }
@@ -37,6 +43,7 @@ function Login() {
             <input type="text" name="email" placeholder='Enter User Email' onChange={handleChange} />
             <br /><br />
             <input type="password" name="password" placeholder='Enter User Password' onChange={handleChange} />
+
             <button onClick={submitForm}>Submit</button>
 
             <Link to="/Register">Don't Have An Account?</Link>

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:5173") 
+@CrossOrigin("http://localhost:5173")
 public class UserController {
-    
+
     @Autowired
     public UserService service;
 
@@ -19,7 +19,7 @@ public class UserController {
         return service.savingNewUser(user);
     }
 
-    @PostMapping("/login")    
+    @PostMapping("/login")
     public User AuthEmailAndPass(@RequestBody User user) {
         return service.authEmailAndPassword(user);
     }
@@ -40,5 +40,10 @@ public class UserController {
     @PutMapping("/update/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
         return service.updateUser(id, user);
+    }
+
+    @PostMapping("/{userId}/enroll/{courseId}")
+    public User enrollUser(@PathVariable Long userId, @PathVariable Long courseId) {
+        return service.enrollUserInCourse(userId, courseId);
     }
 }
